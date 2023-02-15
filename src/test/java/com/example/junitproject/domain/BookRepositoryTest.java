@@ -1,5 +1,7 @@
 package com.example.junitproject.domain;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -13,7 +15,21 @@ public class BookRepositoryTest {
     // 책 등록
     @Test
     public void save_test(){
-        System.out.println("책등록_test 실행");
+        //given(데이터 준비)
+        String title = "Junit5";
+        String author = "Test";
+
+        Book book = Book.builder()
+                    .title(title)
+                    .author(author)
+                    .build();
+
+        //when(테스트 실행)
+        Book bookPS = bookRepository.save(book);
+
+        //then(검증)
+        assertEquals(title, bookPS.getTitle());
+        assertEquals(author, bookPS.getAuthor());
     }
 
     // 책 목록보기
