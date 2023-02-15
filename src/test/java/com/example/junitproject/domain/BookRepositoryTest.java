@@ -2,9 +2,13 @@ package com.example.junitproject.domain;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.util.List;
+
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+
 
 @DataJpaTest //DB와 관련된 컴포넌트들만 메모리에 로드
 public class BookRepositoryTest {
@@ -12,6 +16,17 @@ public class BookRepositoryTest {
     @Autowired //DI
     private BookRepository bookRepository;
 
+    @BeforeEach //각 테스트 시작전에 한번만 실행, @BeforeAll : 테스트 진행전에 한번만 실행
+    public void insert_data(){
+        String title = "Junit5";
+        String author = "Test";
+
+        Book book = Book.builder()
+                    .title(title)
+                    .author(author)
+                    .build();
+        bookRepository.save(book);
+    } // 다음 메서드까지만 트랜잭션 유지
     // 책 등록
     @Test
     public void save_test(){
@@ -30,11 +45,37 @@ public class BookRepositoryTest {
         //then(검증)
         assertEquals(title, bookPS.getTitle());
         assertEquals(author, bookPS.getAuthor());
-    }
+    } // 트랜잭션 종료(저장된 데이터 초기화) -> 각각 테스트는 분리를 시키는게 좋다
 
     // 책 목록보기
+    @Test
+    public void selectAll_test(){
+        //given
+        String title = "Junit5";
+        String author = "Test";
+
+        //when
+        List<Book> booksPS = bookRepository.findAll();
+
+        //then
+        assertEquals(title, booksPS.get(0).getTitle());
+        assertEquals(author, booksPS.get(0).getAuthor());
+    }// 트랜잭션 종료(저장된 데이터 초기화) -> 각각 테스트는 분리를 시키는게 좋다
 
     // 책 한건보기
+    @Test
+    public void select_test(){
+        //given
+        String title = "Junit5";
+        String author = "Test";
+
+        //when
+        Book bookPS = bookRepository.findById(1L).get();
+
+        //then
+        assertEquals(title, bookPS.getTitle());
+        assertEquals(author, bookPS.getAuthor());
+    }// 트랜잭션 종료(저장된 데이터 초기화) -> 각각 테스트는 분리를 시키는게 좋다
 
     // 책 수정
 

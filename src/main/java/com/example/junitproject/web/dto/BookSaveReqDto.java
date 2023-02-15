@@ -18,4 +18,8 @@ public class BookSaveReqDto {
 }
 /*
   클라이언트 title, author -> Controller -> BookSaveReqDto -> Service -> Book Entity 변환 -> BookRepository.save(book)
+
+  1. 메서드는 하나의 기능(책임 분리)
+  2. 각 메서드에 해당하는 테스트 코드 작성(유지보수 편리)
+  3. 시간 단축
  */
