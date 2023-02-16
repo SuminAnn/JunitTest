@@ -1,6 +1,7 @@
 package com.example.junitproject.domain;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import java.util.List;
 
@@ -80,6 +81,18 @@ public class BookRepositoryTest {
     // 책 수정
 
     // 책 삭제
+    @Test
+    public void delect_test(){
+        //given
+        Long id = 1L;
+
+        //when
+        bookRepository.deleteById(id);
+
+        //then
+        assertFalse(bookRepository.findById(id).isPresent());
+
+    }
 }
 
 /*
