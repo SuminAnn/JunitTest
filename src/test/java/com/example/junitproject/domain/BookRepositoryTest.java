@@ -81,6 +81,33 @@ public class BookRepositoryTest {
     }// 트랜잭션 종료(저장된 데이터 초기화) -> 각각 테스트는 분리를 시키는게 좋다
 
     // 책 수정
+    @Sql("classpath:db/tableInit.sql")
+    @Test
+    public void update_test(){
+        //given
+        Long id = 1L;
+        String title = "junit5";
+        String author  = "update";
+        Book book = Book.builder()
+                    .id(id)
+                    .title(title)
+                    .author(author)
+                    .build();
+
+        //when
+        Book bookPS = bookRepository.save(book);
+
+        bookRepository.findAll().stream()
+            .forEach((b) -> {
+                System.out.println(b.getAuthor());
+            });
+
+
+        //then
+        assertEquals(id, bookPS.getId());
+        assertEquals(title, bookPS.getTitle());
+        assertEquals(author, bookPS.getAuthor());
+    }
 
     // 책 삭제
     @Sql("classpath:db/tableInit.sql")
