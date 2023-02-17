@@ -140,4 +140,8 @@ public class BookRepositoryTest {
 * 테스트 메서드가 하나 실행 후 종료되면 데이터가 초기화된다.(@Transactional로 인해)
  - PK(auto_increment) 값이 초기화가 안된다
    -> 해결방법 : @Sql 활용 (id를 활용하는 test에서는 테이블을 drop후에 다시 생성해주는것이 좋다)
+
+* Junit -> 테스트 도구(라이브러리)
+  - 메서드 실행 -> 종료 -> Rollback
+  - @Sql은 메모리가 아닌 HDD에 저장된 데이터를 조작한다
 */
