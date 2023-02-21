@@ -1,6 +1,7 @@
 package com.example.junitproject.service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
@@ -27,17 +28,39 @@ public class BookService {
     }
 
     //2. 책 목록보기
-    public List<BookRespDto> select(){
+    public List<BookRespDto> selectList(){
         return bookRepository.findAll().stream()
         .map(new BookRespDto()::toDto)
         .collect(Collectors.toList()); // bookRepository.findAll()을 return하는 경우 Book타입으로 return이 되기때문에 dto로 변경해서 return을 해줘야한다
     } 
 
     //3. 책한건보기
+    public BookRespDto selectOne(Long id){
+        Optional<Book> bookOP = bookRepository.findById(id);
+        if(bookOP.isPresent()){
+            return new BookRespDto().toDto(bookOP.get());
+        }else{
+            throw new RuntimeException("해당 아이디를 찾을 수 없습니다.");
+        }
+    }
 
     //4. 책삭제
+    @Transactional(rollbackFor = RuntimeException.class)
+    public void delect(Long id){
+        bookRepository.deleteById(id);
+    }
 
     //5. 책수정
+    @Transactional(rollbackFor = RuntimeException.class)
+    public void update(Long id, BookSaveReqDto dto){
+        Optional<Book> bookOP = bookRepository.findById(id);
+        if(bookOP.isPresent()){
+            Book bookPS = bookOP.get();
+            bookPS.update(dto.getTitle(), dto.getAuthor());
+        }else{
+            throw new RuntimeException("해당 아이디를 찾을 수 없습니다.");
+        }
+    }
 }
 
 /*
