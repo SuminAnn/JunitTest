@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.example.junitproject.domain.Book;
 import com.example.junitproject.domain.BookRepository;
+import com.example.junitproject.util.MailSender;
 import com.example.junitproject.web.dto.BookRespDto;
 import com.example.junitproject.web.dto.BookSaveReqDto;
 
@@ -19,11 +20,17 @@ import lombok.RequiredArgsConstructor;
 public class BookService {
 
     private final BookRepository bookRepository; //final은 객체 생성 시점에 값이 들어와야한다(@RequiredArgsConstructor은 final 필드에 주입__DI)
+    private final MailSender mailSender;
 
     // 1. 책등록
     @Transactional(rollbackFor = RuntimeException.class)
     public BookRespDto save(BookSaveReqDto dto){
        Book bookPS = bookRepository.save(dto.toEntity());
+       if(bookPS != null){
+        if(!mailSender.send()){
+            throw new RuntimeException("메일이 전송되지 않았습니다");
+        }
+       }
        return new BookRespDto().toDto(bookPS); //연속화된 객체를 끊어내기 위해서 Book이 아닌 dto를 return
     }
 
